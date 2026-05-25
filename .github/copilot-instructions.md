@@ -27,7 +27,7 @@ RAG-over-documents chatbot that answers patient questions about insurance Explan
 - `src/query.js` — request pipeline: embed question → cosine search → keyword supplement → build context → call LLM → return `{ answer, citations }`
 - `src/llm.js` — Anthropic Claude integration; calls `callLLM(systemPrompt, userMessage)` using the configured `ANTHROPIC_MODEL`
 - `src/embedder.js` — wraps `@xenova/transformers` pipeline; caches model in `.xenova-cache/`; satisfies §5 Privacy Boundary (no external embedding call)
-- `src/vectorStore.js` — in-memory cache of `vector_store.json`; exports `load()`, `save()`, `search()`, `storeSize()`; no synchronous fs calls on the request path
+- `src/vectorStore.js` — in-memory cache of `vector_store.json`; exports `load()`, `save()`, `search()`, `searchWithScores()`, `storeSize()`; no synchronous fs calls on the request path
 - `src/ingest.js` — one-shot admin CLI; reads data files, chunks at 300 chars / 50 overlap, embeds, writes store
 - `client/src/App.jsx` — single-page React chat UI; citation block; refusal badge; suggested-question buttons
 
@@ -54,3 +54,7 @@ RAG-over-documents chatbot that answers patient questions about insurance Explan
 
 Constitution: `.specify/memory/constitution.md`
 Spec files: `specs/` (one subdirectory per feature)
+
+<!-- SPECKIT START -->
+Active plan: `specs/003-react-chat-ui/plan.md`
+<!-- SPECKIT END -->

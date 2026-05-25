@@ -34,6 +34,23 @@ function search(queryEmbedding, topK) {
   return scored.slice(0, topK).map(s => s.entry);
 }
 
+function searchWithScores(queryEmbedding, topK, minScore) {
+  if (store.length === 0) return [];
+  const scored = store.map(entry => ({
+    entry,
+    score: cosine(queryEmbedding, entry.embedding),
+  }));
+  scored.sort((a, b) => b.score - a.score);
+  return scored
+    .filter(s => s.score >= minScore)
+    .slice(0, topK)
+    .map(s => ({ text: s.entry.text, source: s.entry.source, chunkIndex: s.entry.chunkIndex, score: s.score }));
+}
+
+function getAll() {
+  return store;
+}
+
 function storeSize() {
   return store.length;
 }
@@ -49,4 +66,4 @@ function cosine(a, b) {
   return dot / (Math.sqrt(normA) * Math.sqrt(normB));
 }
 
-module.exports = { load, save, search, storeSize };
+module.exports = { load, save, search, searchWithScores, getAll, storeSize };
