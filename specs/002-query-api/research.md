@@ -6,11 +6,11 @@
 
 **Decision**: Add `searchWithScores(queryEmbedding, topK, minScore)` to `vectorStore.js`. It mirrors the existing `search()` logic but: (a) filters entries whose cosine score is below `minScore` before slicing, and (b) returns `{ text, source, chunkIndex, score }` objects instead of raw entries.
 
-**Rationale**: Minimal surgical extension to an existing module; avoids duplicating cosine logic outside `vectorStore.js`; the existing `search()` function is retained unchanged for backward compatibility with `ingest.js` if needed.
+**Rationale**: Minimal surgical extension to an existing module; avoids duplicating cosine logic outside `vectorStore.js`. The original `search()` function was subsequently removed after confirming `ingest.js` has no callers of it — `searchWithScores()` is now the sole search export.
 
 **Alternatives considered**:
 - Export `cosine()` and re-implement scoring in `query.js` — rejected because it duplicates logic and spreads responsibility.
-- Replace `search()` with the new signature — rejected because it is a breaking change to an already-shipped module.
+- Replace `search()` with the new signature — originally rejected as a breaking change; later carried out after static analysis confirmed zero call-sites outside `vectorStore.js` itself.
 
 ---
 
