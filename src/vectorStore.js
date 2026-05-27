@@ -24,14 +24,9 @@ async function save(entries) {
   await fs.promises.writeFile(STORE_PATH, JSON.stringify(entries), 'utf8');
 }
 
-function search(queryEmbedding, topK) {
-  if (store.length === 0) return [];
-  const scored = store.map(entry => ({
-    entry,
-    score: cosine(queryEmbedding, entry.embedding),
-  }));
-  scored.sort((a, b) => b.score - a.score);
-  return scored.slice(0, topK).map(s => s.entry);
+async function append(newEntries) {
+  newEntries.forEach(e => store.push(e));
+  await fs.promises.writeFile(STORE_PATH, JSON.stringify(store), 'utf8');
 }
 
 function searchWithScores(queryEmbedding, topK, minScore) {
@@ -66,4 +61,4 @@ function cosine(a, b) {
   return dot / (Math.sqrt(normA) * Math.sqrt(normB));
 }
 
-module.exports = { load, save, search, searchWithScores, getAll, storeSize };
+module.exports = { load, save, append, searchWithScores, getAll, storeSize };
