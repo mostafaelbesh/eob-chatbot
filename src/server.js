@@ -53,9 +53,11 @@ app.post('/api/query', async (req, res, next) => {
   }
 });
 
+app.use('/api/ingest', require('./routes/ingest'));
+
 app.use(express.static(path.join(__dirname, '..', 'client', 'dist')));
 
-app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
+app.use((err, req, res, _next) => {
   res.status(500).json({ error: 'Internal server error' });
 });
 
