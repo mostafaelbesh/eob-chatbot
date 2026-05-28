@@ -81,6 +81,33 @@ async function run() {
   });
   assert('POST /api/query with non-string question → 400', res.status === 400);
 
+  res = await fetch(`${BASE}/api/query`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ question: 'What is a deductible?' }),
+  });
+  body = await res.json();
+  assert(
+    'POST /api/query with matching question → faithfulnessScore is a number between 0 and 1',
+    res.status === 200 &&
+    typeof body.faithfulnessScore === 'number' &&
+    body.faithfulnessScore >= 0 &&
+    body.faithfulnessScore <= 1
+  );
+
+  res = await fetch(`${BASE}/api/query`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ question: 'What is the capital of France?' }),
+  });
+  body = await res.json();
+  assert(
+    "POST /api/query with irrelevant question → fail-closed response, no faithfulnessScore",
+    res.status === 200 &&
+    body.answer === "I can't find that in your documents." &&
+    body.faithfulnessScore === undefined
+  );
+
   process.exit(failures > 0 ? 1 : 0);
 }
 

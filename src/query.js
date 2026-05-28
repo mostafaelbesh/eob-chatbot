@@ -3,6 +3,7 @@
 const { embed } = require('./embedder');
 const vectorStore = require('./vectorStore');
 const { callLLM } = require('./llm');
+const { checkFaithfulness } = require('./nliChecker');
 
 const MIN_SCORE = 0.10;
 const TOP_K = 6;
@@ -56,9 +57,16 @@ async function queryPipeline(question) {
     return { answer: FAIL_CLOSED, citations: [] };
   }
 
+  const { score, passed } = await checkFaithfulness(answer, chunks);
+
+  if (!passed) {
+    return { answer: FAIL_CLOSED, citations: [] };
+  }
+
   return {
     answer,
     citations: chunks.map(c => ({ source: c.source, excerpt: c.text, score: c.score })),
+    faithfulnessScore: score,
   };
 }
 

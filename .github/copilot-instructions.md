@@ -56,5 +56,5 @@ Constitution: `.specify/memory/constitution.md`
 Spec files: `specs/` (one subdirectory per feature)
 
 <!-- SPECKIT START -->
-Active plan: `specs/004-supabase-storage-ingest/plan.md`
+Active plan: `specs/005-nli-anti-hallucination/plan.md`
 <!-- SPECKIT END -->

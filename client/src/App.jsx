@@ -55,6 +55,7 @@ export default function App() {
           citations: data.citations ?? [],
           isRefusal,
           isError: false,
+          faithfulnessScore: data.faithfulnessScore ?? null,
         },
       ]);
     } catch {
@@ -68,6 +69,7 @@ export default function App() {
           citations: [],
           isRefusal: false,
           isError: true,
+          faithfulnessScore: null,
         },
       ]);
     } finally {
@@ -214,6 +216,24 @@ export default function App() {
                   No matching records found
                 </div>
               )}
+
+              {msg.role === 'bot' && !msg.isRefusal && !msg.isError &&
+                msg.faithfulnessScore != null && msg.faithfulnessScore >= 0.8 && (
+                  <div
+                    style={{
+                      display: 'inline-block',
+                      marginTop: '0.625rem',
+                      padding: '0.25rem 0.75rem',
+                      backgroundColor: '#16a34a',
+                      color: '#ffffff',
+                      borderRadius: '9999px',
+                      fontSize: '0.75rem',
+                      fontWeight: 600,
+                    }}
+                  >
+                    Verified against your documents
+                  </div>
+                )}
             </div>
           </div>
         ))}
